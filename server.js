@@ -1,6 +1,7 @@
 import cors from "cors"
 import express from "express"
 import mongoose from "mongoose"
+import { Thought } from './models/Thought.js'
 
 const mongoUrl = process.env.MONGO_URL || "mongodb://localhost/project-happy-thoughts-api"
 mongoose.connect(mongoUrl)
@@ -16,10 +17,50 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-// Start defining your routes here
 app.get("/", (req, res) => {
-  res.send("Hello Technigo!")
-})
+  res.send("Welcome to my Happy Thoughts API, enjoy!");
+});
+
+// Start defining your routes here
+app.get("/thoughts", async (req, res) => {
+  try {
+    const thoughts = await Thought.find()
+    .sort({ createdAt: 'desc' })
+    .limit(20);
+    res.status(200).json(thoughts);
+  } catch (err) {
+    res.status(400).json({ message: 'Could not fetch thoughts', error: err.errors })
+  }
+  });
+  
+  // POST - create new
+  app.post('/thoughts', async (req, res) => {
+    const { message } = req.body;
+    try {
+      const newThought = await new Thought({ message }).save();
+      res.status(201).json(newThought);
+    } catch (err) {
+      res.status(400).json({ message: 'Could not save thought', error: err.errors });
+    }
+    });
+
+    //POST - like
+    app.post('/thoughts/:thoughtId/like', async (req, res) => {
+      const { thoughtId } = req.params;
+      try {
+        const updatedThought = await Thought.findByIdAndUpdate(
+          thoughtId,
+          { $inc: {hearts: 1 } },
+          { new: true }
+        );
+        if (!updatedThought) {
+          return res.status(404).json({ message: 'Thought not found' });
+        }
+        res.status(200).json(updatedThought);
+      } catch (err) {
+        res.status(400).json({ message: 'Invalid request', error: err.errors });
+      }
+    });
 
 // Start the server
 app.listen(port, () => {
