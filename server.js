@@ -24,7 +24,9 @@ app.get("/", (req, res) => {
 // Start defining your routes here
 app.get("/thoughts", async (req, res) => {
   try {
-    const thoughts = await Thought.find()
+    const { category } = req.query;
+    const filter = category ? { category: category } : {};
+    const thoughts = await Thought.find(filter)
     .sort({ createdAt: 'desc' })
     .limit(20);
     res.status(200).json(thoughts);
