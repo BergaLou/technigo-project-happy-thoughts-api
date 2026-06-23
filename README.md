@@ -26,6 +26,13 @@ This project is part of my education where the goal was to build a full-stack pr
 
 ## View it live
 
+[https://bergalou-project-happy-thoughts-api.onrender.com/thoughts]
+(https://bergalou-project-happy-thoughts-api.onrender.com/thoughts)
+
+earlier project with this my own API -
+[https://technigo-project-happy-thoughts.bergalou.workers.dev/]
+(https://technigo-project-happy-thoughts.bergalou.workers.dev/)
+
 ## Getting Started with the Project
 
 ### Dependency Installation & Startup Development Server
